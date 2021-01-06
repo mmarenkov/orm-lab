@@ -21,17 +21,14 @@ source:
 
 locale: "en"
 variableGroups:
-  - title: "Node Configuration"
+  - title: "Instance Configuration"
     variables:
       - targetCompartment
       - ${nodeCount}
       - ${nodeShapes}
-      - ${availability}
-  - title: "Application Details"
-    variables:
-      - ${username}
-      - ${password}
-      - ${dnsServers}
+      - ${myImageId}
+      - ${myShape}
+      
   - title: "Subnet"
     variables:
       - ${vcnCompartment}
@@ -43,23 +40,11 @@ variableGroups:
       - ${hide_private_subnet}
       - ${hide_regional_subnet}
       - ${hide_ad_subnet}
-  - title: "Database"
-    variables:
-      - ${dbCompartment}
-      - ${myDbSystem}
-      - ${myDbHome}
-      - ${myDb}
-      - ${myAutonomousDB}
-  - title: "Advanced"
-    variables:
-      - ${myImageId}
-      - ${myShape}
-      - ${myCompatibleShape}
-    visible: true
+  
   - title: "Hidden"
     variables:
       - ${myRegion}
-    visible: false
+    visible: true
   - title: "Existing Vcn"
     variables:
       - ${myVcn}
@@ -72,9 +57,7 @@ variableGroups:
             - true
           - not:
             - false
-  - title: "Password can't be 'password'!"
-    variables:
-      - ${password}
+  
   - title: "Complex Conditional Section"
     variables:
       - ${myVcn}
@@ -87,76 +70,17 @@ variableGroups:
             - true
           - not:
             - false
-  - title: "Equality Conditional Section"
-    variables:
-      - ${myVcn}
-    visible:
-      eq:
-        - ${objectStorageTier}
-        - standard
-
 variables:
-  # string field
-  username:
-    type: string
-    minLength: 1
-    maxLength: 255
-    pattern: "^[a-z][a-zA-Z0-9]+$"
-    # title is used as the label if present
-    title: Username
-    # description used as the tooltip if present
-    description: Enter your username
-    default: admin
-    required: true
-
-  # password field
-  password:
-    description: Really Bad Password Field
-    type: password
-    pattern: "^[a-zA-z]{1,8}$"
-    required: true
-
   # integer field
   nodeCount:
     type: integer
     description: Number of Nodes
-    minimum: 3
+    minimum: 1
     maximum: 12
     multipleOf: 3
-
-  # non-integer number field
-  availability:
-    type: number
-    default: 99.7
-    maximum: 100
-    minimum: 0
-
-  # string enum
-  objectStorageTier:
-    type: enum
-    enum:
-    - archive
-    - standard
-
-  # input a list, each element must be an ip addresses
-  dnsServers:
-    type: array
-    items:
-      type: string
-      pattern: "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
-    minItems: 1
-    uniqueItems: true
-    default: [ 8.8.8.8, 8.8.4.4 ]
-
-  # datetime picker
-  expireDate:
-    type: datetime
-
   # compartmentId dynamic dropdown, targetCompartment present in input variables
   targetCompartment:
     type: oci:identity:compartment:id
-
-
   # ---- subnet picker ---- #
 
   useExistingVcn:
